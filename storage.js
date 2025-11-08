@@ -1,250 +1,175 @@
-// Storage abstraction layer
-// This can be easily swapped to use filen.io API
-
+// storage.js - Cloud Sync Adapter
 class StorageAdapter {
     constructor() {
-        this.storageType = 'local'; // Will be 'filen' when API is configured
         this.filenConfig = null;
-        this.syncInProgress = false;
+        this.autoSync = false;
+        this.syncQueue = [];
+        this.isSyncing = false;
     }
 
-    // Initialize storage (will setup filen.io connection later)
     async init(config = null) {
         if (config && config.filenApiKey) {
             this.filenConfig = config;
-            this.storageType = 'filen';
-            return await this.testFilenConnection();
+            this.autoSync = config.autoSync || false;
+
+            const connected = await this.testFilenConnection();
+            if (connected) {
+                console.log('✓ Connected to filen.io');
+                await this.pullFromCloud();
+
+                if (this.autoSync) {
+                    this.startPeriodicSync();
+                }
+            }
+            return connected;
         }
         return true;
     }
 
-    // Test filen.io connection
     async testFilenConnection() {
-        if (!this.filenConfig) return false;
-        
         try {
-            // TODO: Add actual filen.io API test call when credentials are provided
-            // const response = await fetch('https://api.filen.io/v3/user/info', {
-            //     headers: {
-            //         'Authorization': `Bearer ${this.filenConfig.apiKey}`
-            //     }
-            // });
-            // return response.ok;
-            
-            console.log('filen.io API not yet configured');
-            return false;
-        } catch (error) {
-            console.error('Failed to connect to filen.io:', error);
-            return false;
-        }
-    }
-
-    // Get all data
-    async getData() {
-        if (this.storageType === 'filen') {
-            return await this.getDataFromFilen();
-        }
-        return this.getDataFromLocal();
-    }
-
-    // Save all data
-    async saveData(data) {
-        if (this.storageType === 'filen') {
-            return await this.saveDataToFilen(data);
-        }
-        return this.saveDataToLocal(data);
-    }
-
-    // LOCAL STORAGE METHODS
-    getDataFromLocal() {
-        try {
-            const data = localStorage.getItem('flexibase_data');
-            if (data) {
-                return JSON.parse(data);
-            }
-        } catch (error) {
-            console.error('Error reading from localStorage:', error);
-        }
-        
-        // Return default structure
-        return {
-            tables: {},
-            activities: [],
-            meta: {
-                version: '2.0.0',
-                lastModified: new Date().toISOString()
-            }
-        };
-    }
-
-    saveDataToLocal(data) {
-        try {
-            data.meta.lastModified = new Date().toISOString();
-            localStorage.setItem('flexibase_data', JSON.stringify(data));
-            return true;
-        } catch (error) {
-            console.error('Error saving to localStorage:', error);
-            return false;
-        }
-    }
-
-    // FILEN.IO METHODS (placeholders for now)
-    async getDataFromFilen() {
-        try {
-            // TODO: Implement filen.io fetch
-            // 1. List files in designated folder
-            // 2. Download the database file (e.g., flexibase.json)
-            // 3. Parse and return the data
-            
-            /*
-            Example structure:
-            const response = await fetch('https://api.filen.io/v3/file/download', {
-                method: 'POST',
+            const response = await fetch('https://api.filen.io/v3/user/info', {
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${this.filenConfig.apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uuid: this.filenConfig.fileUuid
-                })
+                    'Authorization': `Bearer ${this.filenConfig.filenApiKey}`
+                }
             });
-            
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            }
-            */
-            
-            console.warn('filen.io get not implemented yet, falling back to local storage');
-            return this.getDataFromLocal();
+            return response.ok;
         } catch (error) {
-            console.error('Error fetching from filen.io:', error);
-            return this.getDataFromLocal();
+            console.error('filen.io connection failed:', error);
+            return false;
         }
     }
 
-    async saveDataToFilen(data) {
+    queueSync(type, action, data) {
+        this.syncQueue.push({ type, action, data, timestamp: Date.now() });
+
+        clearTimeout(this.syncTimeout);
+        this.syncTimeout = setTimeout(() => this.pushToCloud(), 2000);
+    }
+
+    async pushToCloud() {
+        if (!this.filenConfig || this.isSyncing) return;
+
+        this.isSyncing = true;
         try {
-            // TODO: Implement filen.io save
-            // 1. Convert data to JSON
-            // 2. Upload to filen.io
-            // 3. Update file metadata
-            
-            /*
-            Example structure:
-            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-            
+            const data = await window.db.exportData();
+
+            const jsonData = JSON.stringify(data);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+
             const formData = new FormData();
-            formData.append('file', blob, 'flexibase.json');
-            formData.append('parent', this.filenConfig.folderId);
-            
+            formData.append('file', blob, 'flexibase-data.json');
+            formData.append('parent', this.filenConfig.folderId || 'default');
+
             const response = await fetch('https://api.filen.io/v3/upload', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.filenConfig.apiKey}`
+                    'Authorization': `Bearer ${this.filenConfig.filenApiKey}`
                 },
                 body: formData
             });
-            
-            return response.ok;
-            */
-            
-            console.warn('filen.io save not implemented yet, saving to local storage');
-            return this.saveDataToLocal(data);
-        } catch (error) {
-            console.error('Error saving to filen.io:', error);
-            return this.saveDataToLocal(data);
-        }
-    }
 
-    // Sync between local and remote
-    async sync() {
-        if (this.storageType !== 'filen' || this.syncInProgress) {
-            return false;
-        }
-
-        this.syncInProgress = true;
-        
-        try {
-            // TODO: Implement proper sync logic
-            // 1. Get remote data
-            // 2. Get local data
-            // 3. Compare timestamps
-            // 4. Merge changes (last-write-wins or more sophisticated conflict resolution)
-            // 5. Save merged data to both locations
-            
-            const localData = this.getDataFromLocal();
-            const remoteData = await this.getDataFromFilen();
-            
-            // Simple last-write-wins for now
-            let mergedData;
-            if (new Date(localData.meta.lastModified) > new Date(remoteData.meta.lastModified)) {
-                mergedData = localData;
-                await this.saveDataToFilen(mergedData);
-            } else {
-                mergedData = remoteData;
-                this.saveDataToLocal(mergedData);
+            if (!response.ok) {
+                throw new Error(`Upload failed: ${response.status}`);
             }
-            
-            return true;
+
+            const result = await response.json();
+            this.filenConfig.fileUuid = result.uuid;
+
+            await window.db.setMetadata('filen_file_uuid', result.uuid);
+
+            console.log('✓ Synced to filen.io');
+            this.syncQueue = [];
         } catch (error) {
-            console.error('Sync error:', error);
-            return false;
+            console.error('Failed to sync to filen.io:', error);
         } finally {
-            this.syncInProgress = false;
+            this.isSyncing = false;
         }
     }
 
-    // Export data for backup
-    exportData() {
-        const data = this.getDataFromLocal();
-        const dataStr = JSON.stringify(data, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `flexibase_backup_${new Date().toISOString().split('T')[0]}.json`;
-        link.click();
-        
+    async pullFromCloud() {
+        if (!this.filenConfig) return;
+
+        try {
+            const fileUuid = this.filenConfig.fileUuid ||
+                await window.db.getMetadata('filen_file_uuid');
+
+            if (!fileUuid) {
+                console.log('No cloud data found');
+                return;
+            }
+
+            const response = await fetch('https://api.filen.io/v3/file/download', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.filenConfig.filenApiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ uuid: fileUuid })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Download failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            await window.db.importData(data);
+
+            console.log('✓ Pulled data from filen.io');
+        } catch (error) {
+            console.error('Failed to pull from filen.io:', error);
+        }
+    }
+
+    startPeriodicSync() {
+        this.syncInterval = setInterval(() => {
+            this.pushToCloud();
+        }, 5 * 60 * 1000);
+    }
+
+    stopPeriodicSync() {
+        if (this.syncInterval) {
+            clearInterval(this.syncInterval);
+        }
+    }
+
+    async manualSync() {
+        await this.pushToCloud();
+        await this.pullFromCloud();
+    }
+
+    async exportToFile() {
+        const data = await window.db.exportData();
+        const jsonData = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `flexibase-backup-${Date.now()}.json`;
+        a.click();
+
         URL.revokeObjectURL(url);
     }
 
-    // Import data from backup
-    async importData(file) {
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            
-            // Validate data structure
-            if (!data.tables || !data.meta) {
-                throw new Error('Invalid data format');
-            }
-            
-            // Save imported data
-            this.saveDataToLocal(data);
-            
-            // If filen.io is configured, sync there too
-            if (this.storageType === 'filen') {
-                await this.saveDataToFilen(data);
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('Import error:', error);
-            return false;
-        }
-    }
-
-    // Get storage status
-    getStatus() {
-        return {
-            type: this.storageType,
-            syncing: this.syncInProgress,
-            connected: this.storageType === 'filen' ? !!this.filenConfig : true
-        };
+    async importFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    await window.db.importData(data);
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.onerror = reject;
+            reader.readAsText(file);
+        });
     }
 }
 
-// Create singleton instance
-const storage = new StorageAdapter();
+window.storageAdapter = new StorageAdapter();
