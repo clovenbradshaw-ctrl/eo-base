@@ -1,0 +1,380 @@
+{
+  "tables": {
+    "tbl_example_projects": {
+      "meta": {
+        "name": "Example Projects",
+        "created": "2025-01-01T10:00:00.000Z",
+        "modified": "2025-01-01T10:00:00.000Z"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "required": true,
+          "hidden": true
+        },
+        {
+          "name": "Project Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Description",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "Status",
+          "type": "select",
+          "required": true,
+          "options": ["Planning", "In Progress", "Testing", "Completed", "On Hold"]
+        },
+        {
+          "name": "Priority",
+          "type": "select",
+          "required": false,
+          "options": ["Low", "Medium", "High", "Critical"]
+        },
+        {
+          "name": "Start Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "Due Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "Assignee",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "Budget",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "Active",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "records": [
+        {
+          "id": "rec_1",
+          "Project Name": "Website Redesign",
+          "Description": "Complete overhaul of company website with modern design and improved UX",
+          "Status": "In Progress",
+          "Priority": "High",
+          "Start Date": "2025-01-15",
+          "Due Date": "2025-03-30",
+          "Assignee": "Sarah Johnson",
+          "Budget": 50000,
+          "Active": true
+        },
+        {
+          "id": "rec_2",
+          "Project Name": "Mobile App Development",
+          "Description": "Native iOS and Android app for customer engagement",
+          "Status": "Planning",
+          "Priority": "Critical",
+          "Start Date": "2025-02-01",
+          "Due Date": "2025-06-30",
+          "Assignee": "Mike Chen",
+          "Budget": 120000,
+          "Active": true
+        },
+        {
+          "id": "rec_3",
+          "Project Name": "Database Migration",
+          "Description": "Migrate legacy database to cloud infrastructure",
+          "Status": "Testing",
+          "Priority": "High",
+          "Start Date": "2024-12-01",
+          "Due Date": "2025-02-15",
+          "Assignee": "Alex Rodriguez",
+          "Budget": 35000,
+          "Active": true
+        },
+        {
+          "id": "rec_4",
+          "Project Name": "Customer Portal",
+          "Description": "Self-service portal for customers to manage their accounts",
+          "Status": "Completed",
+          "Priority": "Medium",
+          "Start Date": "2024-09-01",
+          "Due Date": "2024-12-31",
+          "Assignee": "Emily Davis",
+          "Budget": 45000,
+          "Active": false
+        },
+        {
+          "id": "rec_5",
+          "Project Name": "API Integration",
+          "Description": "Integrate with third-party payment and shipping APIs",
+          "Status": "On Hold",
+          "Priority": "Medium",
+          "Start Date": "2025-01-10",
+          "Due Date": "2025-04-30",
+          "Assignee": "David Kim",
+          "Budget": 28000,
+          "Active": false
+        }
+      ]
+    },
+    "tbl_example_contacts": {
+      "meta": {
+        "name": "Example Contacts",
+        "created": "2025-01-01T10:00:00.000Z",
+        "modified": "2025-01-01T10:00:00.000Z"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "required": true,
+          "hidden": true
+        },
+        {
+          "name": "Full Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "required": true
+        },
+        {
+          "name": "Company",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "Position",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "Phone",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "Website",
+          "type": "url",
+          "required": false
+        },
+        {
+          "name": "Category",
+          "type": "select",
+          "required": false,
+          "options": ["Client", "Partner", "Vendor", "Lead", "Other"]
+        },
+        {
+          "name": "Last Contact",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "Active",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "name": "Notes",
+          "type": "textarea",
+          "required": false
+        }
+      ],
+      "records": [
+        {
+          "id": "rec_c1",
+          "Full Name": "John Smith",
+          "Email": "john.smith@example.com",
+          "Company": "TechCorp Industries",
+          "Position": "CTO",
+          "Phone": "+1-555-0101",
+          "Website": "https://techcorp.example.com",
+          "Category": "Client",
+          "Last Contact": "2025-01-05",
+          "Active": true,
+          "Notes": "Key decision maker for enterprise software purchases. Interested in our new API platform."
+        },
+        {
+          "id": "rec_c2",
+          "Full Name": "Maria Garcia",
+          "Email": "maria.garcia@innovate.com",
+          "Company": "Innovate Solutions",
+          "Position": "Product Manager",
+          "Phone": "+1-555-0202",
+          "Website": "https://innovatesolutions.example.com",
+          "Category": "Partner",
+          "Last Contact": "2024-12-20",
+          "Active": true,
+          "Notes": "Partnership discussions for co-marketing campaign in Q2 2025."
+        },
+        {
+          "id": "rec_c3",
+          "Full Name": "Robert Johnson",
+          "Email": "robert.j@suppliers.net",
+          "Company": "Global Suppliers Inc",
+          "Position": "Sales Director",
+          "Phone": "+1-555-0303",
+          "Website": "https://globalsuppliers.example.com",
+          "Category": "Vendor",
+          "Last Contact": "2025-01-10",
+          "Active": true,
+          "Notes": "Hardware supplier for our data center expansion project."
+        },
+        {
+          "id": "rec_c4",
+          "Full Name": "Jennifer Lee",
+          "Email": "jennifer.lee@startup.io",
+          "Company": "StartupXYZ",
+          "Position": "Founder",
+          "Phone": "+1-555-0404",
+          "Website": "https://startupxyz.example.com",
+          "Category": "Lead",
+          "Last Contact": "2025-01-08",
+          "Active": true,
+          "Notes": "Warm lead from conference. Follow up in early February about enterprise plan."
+        },
+        {
+          "id": "rec_c5",
+          "Full Name": "Michael Brown",
+          "Email": "m.brown@consultancy.com",
+          "Company": "Brown Consultancy",
+          "Position": "Senior Consultant",
+          "Phone": "+1-555-0505",
+          "Website": "https://brownconsultancy.example.com",
+          "Category": "Partner",
+          "Last Contact": "2024-11-15",
+          "Active": false,
+          "Notes": "Project completed. Keep in touch for future opportunities."
+        }
+      ]
+    },
+    "tbl_example_content": {
+      "meta": {
+        "name": "Example Content Calendar",
+        "created": "2025-01-01T10:00:00.000Z",
+        "modified": "2025-01-01T10:00:00.000Z"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "required": true,
+          "hidden": true
+        },
+        {
+          "name": "Title",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "Content Type",
+          "type": "select",
+          "required": true,
+          "options": ["Blog Post", "Social Media", "Video", "Newsletter", "Podcast"]
+        },
+        {
+          "name": "Status",
+          "type": "select",
+          "required": true,
+          "options": ["Idea", "Draft", "Review", "Scheduled", "Published"]
+        },
+        {
+          "name": "Publish Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "Author",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "Platform",
+          "type": "select",
+          "required": false,
+          "options": ["Website", "LinkedIn", "Twitter", "YouTube", "Email", "Multiple"]
+        },
+        {
+          "name": "Description",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "Published",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "records": [
+        {
+          "id": "rec_cnt1",
+          "Title": "10 Tips for Remote Team Management",
+          "Content Type": "Blog Post",
+          "Status": "Published",
+          "Publish Date": "2025-01-10",
+          "Author": "Sarah Wilson",
+          "Platform": "Website",
+          "Description": "Comprehensive guide on managing distributed teams effectively with tools and best practices.",
+          "Published": true
+        },
+        {
+          "id": "rec_cnt2",
+          "Title": "Product Launch Announcement",
+          "Content Type": "Social Media",
+          "Status": "Scheduled",
+          "Publish Date": "2025-01-25",
+          "Author": "Marketing Team",
+          "Platform": "Multiple",
+          "Description": "Social media campaign for new product launch across all platforms.",
+          "Published": false
+        },
+        {
+          "id": "rec_cnt3",
+          "Title": "Interview with Industry Expert",
+          "Content Type": "Podcast",
+          "Status": "Review",
+          "Publish Date": "2025-02-05",
+          "Author": "Mike Thompson",
+          "Platform": "YouTube",
+          "Description": "45-minute interview discussing industry trends and future predictions.",
+          "Published": false
+        },
+        {
+          "id": "rec_cnt4",
+          "Title": "Monthly Newsletter - January",
+          "Content Type": "Newsletter",
+          "Status": "Draft",
+          "Publish Date": "2025-01-31",
+          "Author": "Emma Davis",
+          "Platform": "Email",
+          "Description": "Monthly roundup of company news, blog posts, and upcoming events.",
+          "Published": false
+        },
+        {
+          "id": "rec_cnt5",
+          "Title": "Customer Success Story",
+          "Content Type": "Video",
+          "Status": "Idea",
+          "Publish Date": "2025-02-15",
+          "Author": "Video Team",
+          "Platform": "Website",
+          "Description": "Case study video featuring a major client's implementation and results.",
+          "Published": false
+        }
+      ]
+    }
+  },
+  "meta": {
+    "version": "1.0.0",
+    "lastModified": "2025-01-01T10:00:00.000Z"
+  }
+}

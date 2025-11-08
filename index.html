@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexiBase - Flexible Database</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1>FlexiBase</h1>
+                <div class="table-selector">
+                    <select id="tableSelect">
+                        <option value="">Select a table...</option>
+                    </select>
+                    <button id="newTableBtn" class="btn-icon" title="New Table">+</button>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="syncBtn" class="btn-secondary" title="Sync with filen.io">
+                    <span class="sync-icon">⟳</span> Sync
+                </button>
+                <div class="sync-status" id="syncStatus">Local Storage</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="view-switcher">
+                    <h3>Views</h3>
+                    <button class="view-btn active" data-view="table">
+                        <span class="icon">⊞</span> Table
+                    </button>
+                    <button class="view-btn" data-view="kanban">
+                        <span class="icon">▦</span> Kanban
+                    </button>
+                    <button class="view-btn" data-view="calendar">
+                        <span class="icon">📅</span> Calendar
+                    </button>
+                    <button class="view-btn" data-view="cards">
+                        <span class="icon">▢</span> Cards
+                    </button>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Filters</h3>
+                    <div id="filterControls">
+                        <input type="text" id="searchInput" placeholder="Search records..." class="search-input">
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Actions</h3>
+                    <button id="newRecordBtn" class="btn-primary btn-block">+ New Record</button>
+                    <button id="manageFieldsBtn" class="btn-secondary btn-block">Manage Fields</button>
+                    <button id="viewActivitiesBtn" class="btn-secondary btn-block">📜 View Activity Log</button>
+                    <button id="exportBtn" class="btn-secondary btn-block">Export Data</button>
+                    <button id="importBtn" class="btn-secondary btn-block">Import Data</button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <div id="welcomeScreen" class="welcome-screen">
+                    <h2>Welcome to FlexiBase</h2>
+                    <p>Create a new table or select an existing one to get started.</p>
+                    <button id="createFirstTable" class="btn-primary btn-large">Create Your First Table</button>
+                </div>
+
+                <!-- Table View -->
+                <div id="tableView" class="view-container" style="display: none;">
+                    <div class="table-wrapper">
+                        <table id="dataTable" class="data-table">
+                            <thead id="tableHead"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Kanban View -->
+                <div id="kanbanView" class="view-container" style="display: none;">
+                    <div class="kanban-board" id="kanbanBoard"></div>
+                </div>
+
+                <!-- Calendar View -->
+                <div id="calendarView" class="view-container" style="display: none;">
+                    <div class="calendar-header">
+                        <button id="prevMonth" class="btn-icon">‹</button>
+                        <h2 id="currentMonth"></h2>
+                        <button id="nextMonth" class="btn-icon">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <!-- Cards View -->
+                <div id="cardsView" class="view-container" style="display: none;">
+                    <div class="cards-grid" id="cardsGrid"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for New/Edit Record -->
+    <div id="recordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">New Record</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="recordForm"></form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelRecord" class="btn-secondary">Cancel</button>
+                <button id="saveRecord" class="btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Table Creation -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Table</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="tableForm">
+                    <div class="form-group">
+                        <label for="tableName">Table Name</label>
+                        <input type="text" id="tableName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Fields</label>
+                        <div id="initialFields"></div>
+                        <button type="button" id="addFieldBtn" class="btn-secondary">+ Add Field</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelTable" class="btn-secondary">Cancel</button>
+                <button id="createTable" class="btn-primary">Create Table</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Field Management -->
+    <div id="fieldsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Manage Fields</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="fieldsList"></div>
+                <button id="addNewField" class="btn-secondary">+ Add Field</button>
+            </div>
+            <div class="modal-footer">
+                <button id="closeFields" class="btn-primary">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Field Editor Modal -->
+    <div id="fieldEditorModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="fieldEditorTitle">Add Field</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="field-editor-grid">
+                    <div class="field-editor-config">
+                        <div class="form-group">
+                            <label>Field Name</label>
+                            <input type="text" id="fieldEditorName" placeholder="e.g., Status, Priority, Due Date">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Field Type</label>
+                            <div class="field-type-grid">
+                                <div class="field-type-option" data-type="text">
+                                    <span class="field-type-icon">T</span>
+                                    <span class="field-type-label">Text</span>
+                                </div>
+                                <div class="field-type-option" data-type="textarea">
+                                    <span class="field-type-icon">¶</span>
+                                    <span class="field-type-label">Long Text</span>
+                                </div>
+                                <div class="field-type-option" data-type="number">
+                                    <span class="field-type-icon">#</span>
+                                    <span class="field-type-label">Number</span>
+                                </div>
+                                <div class="field-type-option" data-type="select">
+                                    <span class="field-type-icon">▼</span>
+                                    <span class="field-type-label">Select</span>
+                                </div>
+                                <div class="field-type-option" data-type="date">
+                                    <span class="field-type-icon">📅</span>
+                                    <span class="field-type-label">Date</span>
+                                </div>
+                                <div class="field-type-option" data-type="checkbox">
+                                    <span class="field-type-icon">☑</span>
+                                    <span class="field-type-label">Checkbox</span>
+                                </div>
+                                <div class="field-type-option" data-type="email">
+                                    <span class="field-type-icon">@</span>
+                                    <span class="field-type-label">Email</span>
+                                </div>
+                                <div class="field-type-option" data-type="url">
+                                    <span class="field-type-icon">🔗</span>
+                                    <span class="field-type-label">URL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="selectOptionsConfig" style="display: none;">
+                            <div class="form-group">
+                                <label>Options</label>
+                                <div id="selectOptionsList"></div>
+                                <button type="button" class="btn-secondary btn-sm" id="addSelectOption">+ Add Option</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="fieldEditorRequired">
+                                Required field
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="field-editor-preview">
+                        <h3>Preview</h3>
+                        <div id="fieldPreview" class="field-preview-box">
+                            <div class="field-preview-label">Field Name</div>
+                            <div class="field-preview-input">
+                                <input type="text" placeholder="Preview will appear here" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelFieldEditor" class="btn-secondary">Cancel</button>
+                <button id="saveFieldEditor" class="btn-primary">Save Field</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Import Data</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="importStep1" class="import-step">
+                    <h3>Step 1: Select File</h3>
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <div class="file-drop-content">
+                            <div class="file-drop-icon">📁</div>
+                            <p>Drag and drop a file here</p>
+                            <p class="file-drop-or">or</p>
+                            <button class="btn-primary" id="selectFileBtn">Choose File</button>
+                            <p class="file-drop-hint">Supports: JSON, CSV, TSV</p>
+                        </div>
+                    </div>
+                    <input type="file" id="importFileInput" style="display: none;" accept=".json,.csv,.tsv,.txt">
+                </div>
+
+                <div id="importStep2" class="import-step" style="display: none;">
+                    <h3>Step 2: Map Columns</h3>
+                    <div id="importMapping"></div>
+                </div>
+
+                <div id="importStep3" class="import-step" style="display: none;">
+                    <h3>Step 3: Preview & Import</h3>
+                    <div id="importPreview"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelImport" class="btn-secondary">Cancel</button>
+                <button id="prevImportStep" class="btn-secondary" style="display: none;">← Previous</button>
+                <button id="nextImportStep" class="btn-primary">Next →</button>
+                <button id="confirmImport" class="btn-primary" style="display: none;">Import Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirmDialog" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2 id="confirmTitle">Confirm</h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmCancel" class="btn-secondary">Cancel</button>
+                <button id="confirmOk" class="btn-primary btn-danger">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Dialog -->
+    <div id="alertDialog" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2 id="alertTitle">Notice</h2>
+            </div>
+            <div class="modal-body">
+                <p id="alertMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="alertOk" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Log Viewer -->
+    <div id="activityLogModal" class="modal">
+        <div class="modal-content modal-xlarge">
+            <div class="modal-header">
+                <h2>Activity Log</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="activity-toolbar">
+                    <div class="activity-filters">
+                        <select id="activityTableFilter" class="activity-filter-select">
+                            <option value="">All Tables</option>
+                        </select>
+                        <select id="activityTypeFilter" class="activity-filter-select">
+                            <option value="">All Activity Types</option>
+                            <option value="record.created">Record Created</option>
+                            <option value="record.updated">Record Updated</option>
+                            <option value="record.deleted">Record Deleted</option>
+                            <option value="record.moved">Record Moved</option>
+                            <option value="cell.edited">Cell Edited</option>
+                            <option value="field.added">Field Added</option>
+                            <option value="field.updated">Field Updated</option>
+                            <option value="field.deleted">Field Deleted</option>
+                            <option value="table.created">Table Created</option>
+                        </select>
+                        <input type="date" id="activityDateFilter" class="activity-filter-input" placeholder="Filter by date">
+                    </div>
+                    <div class="activity-view-toggle">
+                        <button id="activityViewTable" class="btn-secondary btn-sm active">Table View</button>
+                        <button id="activityViewJson" class="btn-secondary btn-sm">JSON View</button>
+                    </div>
+                </div>
+
+                <div id="activityTableView" class="activity-view">
+                    <div class="activity-stats">
+                        <span id="activityCount">0 activities</span>
+                        <button id="exportActivitiesBtn" class="btn-secondary btn-sm">Export Activities</button>
+                    </div>
+                    <div class="activity-timeline" id="activityTimeline"></div>
+                </div>
+
+                <div id="activityJsonView" class="activity-view" style="display: none;">
+                    <div class="json-viewer-controls">
+                        <button id="copyJsonBtn" class="btn-secondary btn-sm">Copy JSON</button>
+                        <button id="downloadJsonBtn" class="btn-secondary btn-sm">Download JSON</button>
+                    </div>
+                    <pre id="activityJsonContent" class="json-viewer"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeActivityLog" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="database.js"></script>
+    <script src="views.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexiBase - Quick Start Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .card h3 {
+            color: #555;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 1.5rem;
+            padding-left: 3rem;
+            position: relative;
+        }
+        
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            border-left: 3px solid #667eea;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .feature {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+        
+        .success {
+            background: #d4edda;
+            border-left: 3px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🚀 FlexiBase Quick Start</h1>
+            <p>Your flexible, Airtable-like database in the browser</p>
+        </div>
+
+        <div class="card">
+            <h2>✨ Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">⊞</div>
+                    <strong>Table View</strong>
+                    <p>Classic spreadsheet layout</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">▦</div>
+                    <strong>Kanban</strong>
+                    <p>Visual task boards</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📅</div>
+                    <strong>Calendar</strong>
+                    <p>Date-based organization</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">▢</div>
+                    <strong>Cards</strong>
+                    <p>Gallery view</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Getting Started in 3 Minutes</h2>
+            <ol class="steps">
+                <li>
+                    <strong>Deploy to GitHub Pages</strong>
+                    <p>Upload all files to a GitHub repository and enable GitHub Pages in Settings → Pages</p>
+                </li>
+                <li>
+                    <strong>Create Your First Table</strong>
+                    <p>Click "Create Your First Table" and add some fields (Name, Status, Date, etc.)</p>
+                </li>
+                <li>
+                    <strong>Add Records</strong>
+                    <p>Click "+ New Record" and start entering your data</p>
+                </li>
+                <li>
+                    <strong>Switch Views</strong>
+                    <p>Use the sidebar to switch between Table, Kanban, Calendar, and Cards views</p>
+                </li>
+            </ol>
+            
+            <a href="index.html" class="button">Open FlexiBase →</a>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Field Types</h2>
+            <p>FlexiBase supports multiple field types to fit your data:</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><strong>Text</strong> - Single line text</li>
+                <li><strong>Long Text</strong> - Multi-line text area</li>
+                <li><strong>Number</strong> - Numeric values with validation</li>
+                <li><strong>Select</strong> - Dropdown with custom options</li>
+                <li><strong>Date</strong> - Date picker</li>
+                <li><strong>Checkbox</strong> - True/false values</li>
+                <li><strong>Email</strong> - Email addresses with validation</li>
+                <li><strong>URL</strong> - Web links with validation</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>☁️ Setting Up filen.io Sync</h2>
+            
+            <div class="warning">
+                <strong>⚠️ Important:</strong> By default, FlexiBase uses local browser storage. Your data is stored on your device only. To enable cloud sync, follow these steps.
+            </div>
+
+            <h3>Step 1: Get filen.io Credentials</h3>
+            <ol class="steps">
+                <li>Sign up at <a href="https://filen.io" target="_blank">filen.io</a></li>
+                <li>Go to your account settings</li>
+                <li>Generate an API key</li>
+                <li>Note your folder ID where you want to store data</li>
+            </ol>
+
+            <h3>Step 2: Configure Storage</h3>
+            <p>Copy <code>config.template.js</code> to <code>config.js</code> and fill in your credentials:</p>
+            <div class="code-block">const CONFIG = {
+    filen: {
+        apiKey: 'your-api-key-here',
+        folderId: 'your-folder-id-here',
+        autoSyncInterval: 300000 // 5 minutes
+    }
+};</div>
+
+            <h3>Step 3: Update Storage Module</h3>
+            <p>In <code>storage.js</code>, implement the filen.io API methods. Detailed instructions are in the README.</p>
+
+            <div class="success">
+                <strong>✓ Pro Tip:</strong> Test with local storage first, then add cloud sync once you're comfortable with the app.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💾 Data Management</h2>
+            
+            <h3>Export Your Data</h3>
+            <p>Always keep backups! Click "Export Data" to download a JSON file with all your tables and records.</p>
+            
+            <h3>Import Data</h3>
+            <p>Click "Import Data" to restore from a backup file or migrate data from another instance.</p>
+            
+            <h3>Search & Filter</h3>
+            <p>Use the search box in the sidebar to quickly find records across all fields.</p>
+        </div>
+
+        <div class="card">
+            <h2>🎨 Example Use Cases</h2>
+            
+            <h3>Project Management</h3>
+            <p>Create a table with fields: Task Name (text), Status (select: To Do/In Progress/Done), Assignee (text), Due Date (date), Priority (select: Low/Medium/High)</p>
+            
+            <h3>Content Calendar</h3>
+            <p>Track blog posts or social media: Title (text), Content (long text), Publish Date (date), Platform (select), Status (select)</p>
+            
+            <h3>Contact Database</h3>
+            <p>Organize contacts: Name (text), Email (email), Company (text), Website (url), Last Contact (date), Notes (long text)</p>
+            
+            <h3>Inventory Tracking</h3>
+            <p>Manage products: Item Name (text), SKU (text), Quantity (number), Reorder Level (number), Supplier (text), In Stock (checkbox)</p>
+        </div>
+
+        <div class="card">
+            <h2>🛠️ Development</h2>
+            
+            <h3>Local Testing</h3>
+            <p>No build process needed! Just open <code>index.html</code> in your browser.</p>
+            
+            <p>Or use a local server:</p>
+            <div class="code-block">python -m http.server 8000
+# or
+npx serve</div>
+            
+            <h3>File Structure</h3>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><code>index.html</code> - Main page structure</li>
+                <li><code>styles.css</code> - All styling</li>
+                <li><code>storage.js</code> - Storage abstraction layer</li>
+                <li><code>database.js</code> - Data operations</li>
+                <li><code>views.js</code> - View rendering</li>
+                <li><code>app.js</code> - Application controller</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>📚 Resources</h2>
+            <ul style="margin-left: 2rem;">
+                <li>Check <code>README.md</code> for detailed documentation</li>
+                <li>Review <code>config.template.js</code> for configuration options</li>
+                <li>See inline code comments for implementation details</li>
+            </ul>
+            
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="index.html" class="button">Launch FlexiBase →</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: #666; margin-top: 3rem; padding-bottom: 2rem;">
+            <p>Built with ❤️ using vanilla JavaScript</p>
+            <p style="margin-top: 0.5rem;">No frameworks, no dependencies, just code</p>
+        </div>
+    </div>
+</body>
+</html>
